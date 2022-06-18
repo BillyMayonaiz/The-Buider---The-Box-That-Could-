@@ -4,32 +4,37 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-
-    public GameObject[] Players;
-
     [SerializeField] public GameObject CurrentPlayer;
 
     private FollowPlayer followPlayer;
 
+    private bool isPrimary = true;
+
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            Players[i].GetComponent<PlayerController>().enabled = false;
-        }
-
-        CurrentPlayer = Players[0];
-
         followPlayer = GameObject.Find("Main Camera").GetComponent<FollowPlayer>();
     }
 
     //deactivate current player movement script, and set new selected player as CurrentPlayer
-    public void ChangePlayer(GameObject player)
+    public void ChangePlayer()
     {
-        CurrentPlayer.GetComponent<PlayerController>().enabled = false;
-        CurrentPlayer = player;
+        if (isPrimary)
+        {
+            GameObject.Find("Cat").GetComponent<CatMovement>().enabled = false;
+            isPrimary = false;
+            GameObject.Find("Dog").GetComponent<DogMovement>().enabled = true;
 
-        followPlayer.player = CurrentPlayer;
+            followPlayer.player = GameObject.Find("Dog");
+        }
+        else if (!isPrimary)
+        {
+            GameObject.Find("Cat").GetComponent<CatMovement>().enabled = true;
+            isPrimary = true;
+            GameObject.Find("Dog").GetComponent<DogMovement>().enabled = false;
+
+            followPlayer.player = GameObject.Find("Cat");
+        }
+
     }
 }

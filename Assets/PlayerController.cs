@@ -61,7 +61,6 @@ public class PlayerController : MonoBehaviour
     //enable movement script on selected player, and trigger changeplayer script
     private void OnMouseDown()
     {
-        playerManager.ChangePlayer(this.gameObject);
-        GetComponent<PlayerController>().enabled = true;
+        
     }
 }
