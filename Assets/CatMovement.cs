@@ -6,9 +6,9 @@ public class CatMovement : BaseMovement
 {
     protected override void Move()
     {
-        playerSpeed = 18f;
+        playerSpeed = 10f;
         playerTurnSpeed = 120f;
-        jumpForce = 10f;
+        jumpForce = 50f;
         base.Move();
     }
 }

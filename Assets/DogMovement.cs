@@ -8,7 +8,7 @@ public class DogMovement : BaseMovement
     {
         playerSpeed = 12f;
         playerTurnSpeed = 120f;
-        jumpForce = 10f;
+        jumpForce = 80f;
         base.Move();
     }
 }
