@@ -16,6 +16,7 @@ public class BaseMovement : MonoBehaviour
     [SerializeField] protected float jumpForce;
     [SerializeField] protected bool isGrounded = true;
     [SerializeField] protected bool isMoving = false;
+    [SerializeField] public bool isGameWon = false;
 
     protected Rigidbody playerRb;
     protected PlayerManager playerManager;
@@ -26,14 +27,20 @@ public class BaseMovement : MonoBehaviour
     private float zRangeStart = -15f;
     private float zRangeEnd = 7f;
 
+    private int isWalkingHash;
+    private int isJumpingHash;
+
     
 
         // Start is called before the first frame update
-        void Start()
+        protected virtual void Start()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
         playerRb = GetComponent<Rigidbody>();
         playerAnimator = GameObject.Find("Cat").GetComponent<Animator>();
+
+        isWalkingHash = Animator.StringToHash("isWalking");
+        isJumpingHash = Animator.StringToHash("isJumping");
     }
 
     // Update is called once per frame
@@ -44,17 +51,19 @@ public class BaseMovement : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         //Move, Jump, and Boundary Check
-        Move();
-        Jump();
-        BoundaryCheck();
-        HandleAnimation();
-
-        //change character on Key Press
-        if (Input.GetKeyDown(KeyCode.C))
+        if (!isGameWon)
         {
-            playerManager.ChangePlayer();
-        }
+            Move();
+            Jump();
+            BoundaryCheck();
+            HandleAnimation();
 
+            //change character on Key Press
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                playerManager.ChangePlayer();
+            }
+        }
     }
 
     protected virtual void Move()
@@ -64,7 +73,7 @@ public class BaseMovement : MonoBehaviour
         //Turn the vehicle
         transform.Rotate(Vector3.up * Time.deltaTime * playerTurnSpeed * horizontalInput);
 
-        isMoving = verticalInput != 0;
+        isMoving = verticalInput > 0.1 || verticalInput < -0.1;
     }
 
 
@@ -100,16 +109,26 @@ public class BaseMovement : MonoBehaviour
 
     protected virtual void HandleAnimation()
     {
-        bool isWalking = playerAnimator.GetBool("isWalking");
-        bool isJumping = playerAnimator.GetBool("isJumping");
+        bool isWalking = playerAnimator.GetBool(isWalkingHash);
+        bool isJumping = playerAnimator.GetBool(isJumpingHash);
+        
 
-        if (isMoving && !isJumping)
+        if (isMoving && isGrounded) 
         {
             playerAnimator.SetBool("isWalking", true);
         }
-        else if (!isMoving && !isJumping)
+        else if (!isMoving && isGrounded)
         {
             playerAnimator.SetBool("isWalking", false);
+        }
+
+        if (!isGrounded)
+        {
+            playerAnimator.SetBool("isJumping", true);
+        }
+        else if (isGrounded)
+        {
+            playerAnimator.SetBool("isJumping", false);
         }
 
     }
@@ -119,4 +138,6 @@ public class BaseMovement : MonoBehaviour
     {
         isGrounded = true;
     }
+
+
 }

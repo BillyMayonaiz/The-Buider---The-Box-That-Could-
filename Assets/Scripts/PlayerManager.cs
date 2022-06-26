@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         followPlayer = GameObject.Find("Main Camera").GetComponent<FollowPlayer>();
+        followPlayer.player = GameObject.Find("Cat");
     }
 
     //deactivate current player movement script, and set new selected player as CurrentPlayer
@@ -22,6 +23,7 @@ public class PlayerManager : MonoBehaviour
         if (isPrimary)
         {
             GameObject.Find("Cat").GetComponent<CatMovement>().enabled = false;
+            GameObject.Find("Cat").GetComponent<Animator>().enabled = false;
             isPrimary = false;
             GameObject.Find("Dog").GetComponent<DogMovement>().enabled = true;
 
@@ -30,6 +32,7 @@ public class PlayerManager : MonoBehaviour
         else if (!isPrimary)
         {
             GameObject.Find("Cat").GetComponent<CatMovement>().enabled = true;
+            GameObject.Find("Cat").GetComponent<Animator>().enabled = true;
             isPrimary = true;
             GameObject.Find("Dog").GetComponent<DogMovement>().enabled = false;
 
